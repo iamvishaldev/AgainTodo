@@ -5,115 +5,72 @@ const Todo = () => {
   const [todos, setTodos] = useState([
     {
       id: 1,
-      todo: "watching movie",
+      todo: "Watching IPL",
       isCompleted: true,
     },
     {
       id: 2,
-      todo: "playing game",
+      todo: "Reading Books",
       isCompleted: false,
     },
     {
       id: 3,
-      todo: "coding",
+      todo: "Playing COD",
       isCompleted: true,
     },
   ]);
 
-  const [editTodoId, setEditTodoId] = useState("");
   const [editTodoData, setEditTodoData] = useState("");
+  const [editTodoId, setEditTodoId] = useState("");
 
-  const handleInput = (e) => {
-    // console.log(e.target.value);
-    setText(e.target.value);
-  };
-
-  // Add Todo
+  //   ADD TODO Method
   const handleAddText = () => {
-    const newTodos = {
+    const newTodo = {
       id: Date.now(),
       todo: text,
-      isCompleted: false,
+      isCompleted: true,
     };
-    // console.log(newTodos);
-    setTodos([...todos, newTodos]);
+    setTodos([...todos, newTodo]);
     setText("");
   };
 
-  // const handleAddText = () => {
-  //   const newTodos = {
-  //     id: Date.now(),
-  //     todo: text,
-  //     isCompleted: false,
-  //   };
-  //   // console.log(newTodos);
-  //   setTodos([...todos, newTodos]);
-  //   setText("");
-  // };
-
-  const completeTodo = (id) => {
+  //   iscompleted method
+  const handleIsCompleted = (id) => {
+    // console.log(id);
     const updatedTodo = todos.map((currentTodo) => {
-      if (currentTodo.id === id) {
+      //   console.log(currentTodo);
+      if (id === currentTodo.id) {
         currentTodo.isCompleted = !currentTodo.isCompleted;
       }
       return currentTodo;
     });
-    console.log("updatedTodo: ", updatedTodo);
+    console.log(updatedTodo);
     setTodos(updatedTodo);
   };
 
-  // const completeTodo = (id) => {
-  //   const updateTodo = todos.map((currentTodo) => {
-  //     console.log(
-  //       "user id:",
-  //       id,
-  //       "currentTodo:",
-  //       currentTodo.id,
-  //       currentTodo.todo
-  //     );
-  //     if (currentTodo.id === id) {
-  //       currentTodo.isCompleted = !currentTodo.isCompleted;
-  //     }
-  //     return currentTodo;
-  //   });
-  //   setTodos(updateTodo);
-  // };
-
-  //   Delete Todo
-  // const handleDelete = (id) => {
-  //   const filteredTodo = todos.filter((currentTodo) => {
-  //     console.log("Uid: ", id, "Todoid", currentTodo.id, currentTodo.todo);
-  //     if (id == currentTodo.id) {
-  //       return;
-  //     }
-  //     return currentTodo;
-  //   });
-  //   setTodos(filteredTodo);
-
-  //   console.log(filteredTodo);
-  // };
-
+  // Delete Todo
   const handleDelete = (id) => {
+    // console.log(id);
     const filteredTodo = todos.filter((currentTodo) => {
-      // console.log("Uid: ", id, "Todoid", currentTodo.id, currentTodo.todo);
-      if (id == currentTodo.id) {
+      //   console.log("userId:", id, "currentTodo:", currentTodo.id);
+      if (id === currentTodo.id) {
         return;
       }
       return currentTodo;
     });
-    // console.log(currentTodo);
     setTodos(filteredTodo);
-    console.log(filteredTodo);
   };
 
-  const updateTodoData = () => {
-    const updatedTodo = todos.map((currentTodo) => {
+  // UpdateTodo
+
+  const handleUpdateTodo = () => {
+    const updateTodo = todos.map((currentTodo) => {
       if (currentTodo.id === editTodoId) {
-        currentTodo.todo = editTodoData; //override
+        currentTodo.todo = editTodoData;
       }
       return currentTodo;
     });
-    setTodos(updatedTodo);
+    setTodos(updateTodo);
     document.getElementById("closeEditModal").click();
   };
 
@@ -126,12 +83,12 @@ const Todo = () => {
             className="form-control"
             placeholder="Add Task"
             value={text}
-            onChange={(e) => handleInput(e)}
+            onChange={(e) => setText(e.target.value)}
           />
           <button
             type="button"
             className="btn btn-primary ml-2"
-            onClick={() => handleAddText()}
+            onClick={handleAddText}
             disabled={!text}
           >
             Add Task
@@ -140,85 +97,77 @@ const Todo = () => {
       </div>
       <div className="card-body">
         <ul className="list-group list-group-flush">
-          {todos.map((data) => {
+          {todos.map((currentTodo) => {
             return (
-              <li
-                className="list-group-item d-flex justify-content-between"
-                key={data.id}
-              >
-                <div>
+              <li className="list-group-item " key={currentTodo.id}>
+                <div className="d-flex justify-content-between">
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    checked={data.isCompleted}
-                    onChange={() => completeTodo(data.id)}
+                    value=""
+                    id="flexCheckChecked"
+                    checked={currentTodo.isCompleted}
+                    onChange={() => handleIsCompleted(currentTodo.id)}
                   />
-                  <span className={data.isCompleted ? `completed` : null}>
-                    {data.todo}
+                  <span
+                    className={currentTodo.isCompleted ? "completed" : null}
+                  >
+                    {currentTodo.todo}
                   </span>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    onClick={() => {
+                      setEditTodoId(currentTodo.id);
+                      setEditTodoData(currentTodo.todo);
+                    }}
+                  >
+                    <i className="far fa-edit"></i>
+                  </button>
+                  <i
+                    className="fas fa-minus-circle"
+                    onClick={() => handleDelete(currentTodo.id)}
+                  ></i>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editModal"
-                  onClick={() => {
-                    setEditTodoId(data.id);
-                    setEditTodoData(data.todo);
-                  }}
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
-                <i
-                  className="fas fa-trash"
-                  onClick={() => handleDelete(data.id)}
-                ></i>
               </li>
             );
           })}
         </ul>
       </div>
       {/* Modal */}
-      <div
-        class="modal fade"
-        id="editModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Edit Todo
-              </h5>
+      <div className="modal" tabindex="-1" id="editModal">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Edit Todo</h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 id="closeEditModal"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <input
-                type="text"
                 value={editTodoData}
-                onChange={(event) => setEditTodoData(event.target.value)}
+                onChange={(e) => setEditTodoData(e.target.value)}
               />
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
               <button
                 type="button"
-                class="btn btn-primary"
-                onClick={updateTodoData}
+                className="btn btn-primary"
+                onClick={handleUpdateTodo}
               >
                 Update Todo
               </button>
