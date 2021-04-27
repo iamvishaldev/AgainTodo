@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import AddTodo from "./AddTodo";
+import TodoItem from "./TodoItem";
 
 const Todo = () => {
   const [text, setText] = useState("");
@@ -28,7 +30,7 @@ const Todo = () => {
     const newTodo = {
       id: Date.now(),
       todo: text,
-      isCompleted: true,
+      isCompleted: false,
     };
     setTodos([...todos, newTodo]);
     setText("");
@@ -77,61 +79,19 @@ const Todo = () => {
   return (
     <div className="card shadow">
       <div className="card-header">
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Add Task"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button
-            type="button"
-            className="btn btn-primary ml-2"
-            onClick={handleAddText}
-            disabled={!text}
-          >
-            Add Task
-          </button>
-        </div>
+        <AddTodo text={text} setText={setText} handleAddText={handleAddText} />
       </div>
       <div className="card-body">
         <ul className="list-group list-group-flush">
           {todos.map((currentTodo) => {
             return (
-              <li className="list-group-item " key={currentTodo.id}>
-                <div className="d-flex justify-content-between">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckChecked"
-                    checked={currentTodo.isCompleted}
-                    onChange={() => handleIsCompleted(currentTodo.id)}
-                  />
-                  <span
-                    className={currentTodo.isCompleted ? "completed" : null}
-                  >
-                    {currentTodo.todo}
-                  </span>
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editModal"
-                    onClick={() => {
-                      setEditTodoId(currentTodo.id);
-                      setEditTodoData(currentTodo.todo);
-                    }}
-                  >
-                    <i className="far fa-edit"></i>
-                  </button>
-                  <i
-                    className="fas fa-minus-circle"
-                    onClick={() => handleDelete(currentTodo.id)}
-                  ></i>
-                </div>
-              </li>
+              <TodoItem
+                currentTodo={currentTodo}
+                handleIsCompleted={handleIsCompleted}
+                setEditTodoId={setEditTodoId}
+                setEditTodoData={setEditTodoData}
+                handleDelete={handleDelete}
+              />
             );
           })}
         </ul>
